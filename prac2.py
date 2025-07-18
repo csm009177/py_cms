@@ -3,76 +3,77 @@ import os                    # 파일이나 폴더 경로를 다룰 때 사용�
 import json                  # JSON 형식의 파일을 읽고 쓸 수 있도록 도와주는 도구
 
 # user_info.json 파일을 열어(open)서 그 안에 있는 데이터를 읽어옵니다.
-# 읽은 데이터를 as를 사용하여 user_info_from_json 에 저장합니다
+# 읽은 데이터를 as를 사용하여 user_info_from_json라는 공간에 저장합니다
 # 첫번째 인자 : 파일경로
-# 두번째 인자 : 
-#   'r'	    읽기 전용
-#   'w'	    쓰기 전용
-#   'a'	    추가 모드
-#   'r+'	읽기 + 쓰기
-#   'w+'	쓰기 + 읽기
+# 두번째 인자 : 파일의 모드 지정 
+# 파일의 모드 => 'r':읽기전용 'w':쓰기전용 'a':추가 모드 'r+':읽기+쓰기 'w+':쓰기+읽기
 with open('user_info.json', 'r', encoding='utf-8') as user_info_from_json:
-    # JSON 파일의 내용을 파이썬 딕셔너리(뭐 : 뭐 라는 데이터 형태라고 생각합시다)로 바꿔서 저장합니다.
+    # JSON 파일의 내용을 딕셔너리로 바꿔서 user_info에 저장합니다.
+    # 딕셔너리 => 키 : 값 라는 데이터 형태
     user_info = json.load(user_info_from_json)
 
-    
-# 마이페이지 HTML 파일을 만들어주는 함수
+# 마이페이지 HTML 파일을 만들어주는 함수(요리해주는 기계)
 def mypageMaker(file_name, page_title):
-    page_title = "mypage"  # 페이지 제목을 "mypage"로 고정합니다.
-    my_message = f"{user_info['name']}님의 마이페이지입니다!"  # 사용자 이름을 포함한 인사말을 만듭니다.
-    file_name = page_title + ".html"  # 실제 저장할 파일 이름을 만듭니다. (예: mypage.html)
+    # 괄호는 함수에 넣을 재료를 넣을 투입구입니다
+    # 사용자 이름을 포함한 인사말을 만듭니다.
+    my_message = f"{user_info['name']}님의 마이페이지입니다!"  
+    # 실제 저장할 파일 이름을 만듭니다. (예: mypage.html)
+    file_name = page_title + ".html"  
 
     # HTML 파일을 쓰기 모드(w)로 엽니다.
     file = open(file_name, "w", encoding='utf-8')
 
-    # HTML 문서를 문자열로 작성해서 파일에 저장합니다.
-    file.write(f"""<!DOCTYPE html> 
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <title>{page_title}</title>
+    # HTML 요소들을 변수로 만들어 조합합니다.
+    doctype = "<!DOCTYPE html>"
+    html_open = "<html lang='ko'>"
+    head_open = "<head>"
+    meta_charset = '<meta charset="UTF-8">'
+    title_tag = f"<title>{page_title}</title>"
+    style_tag = """
     <style>
-        body {{
+        body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: #f4f4f9;
             margin: 0;
             padding: 0;
-        }}
-        .container {{
+        }
+        .container {
             max-width: 500px;
             margin: 50px auto;
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             padding: 30px 40px;
-        }}
-        h1 {{
+        }
+        h1 {
             color: #333;
             text-align: center;
-        }}
-        table {{
+        }
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-        }}
-        th, td {{
+        }
+        th, td {
             text-align: left;
             padding: 10px;
             border-bottom: 1px solid #eee;
-        }}
-        th {{
+        }
+        th {
             background: #f0f0f0;
             color: #555;
-        }}
-        tr:last-child td {{
+        }
+        tr:last-child td {
             border-bottom: none;
-        }}
+        }
     </style>
-</head>
-<body>
-    <div class="container">
-        <h1>{page_title}</h1>
-        <p style="text-align:center; color:#666;">{my_message}</p>
+    """
+    head_close = "</head>"
+    body_open = "<body>"
+    container_open = '<div class="container">'
+    h1_tag = f"<h1>{page_title}</h1>"
+    message_tag = f'<p style="text-align:center; color:#666;">{my_message}</p>'
+    table_tag = f"""
         <table>
             <tr><th>이름</th><td>{user_info['name']}</td></tr>
             <tr><th>나이</th><td>{user_info['age']}</td></tr>
@@ -80,11 +81,32 @@ def mypageMaker(file_name, page_title):
             <tr><th>주소</th><td>{user_info['address']}</td></tr>
             <tr><th>전화번호</th><td>{user_info['phone']}</td></tr>
         </table>
-    </div>
-</body>
-</html>
-""")
-    file.close()  # 파일을 저장하고 닫습니다.
+    """
+    container_close = "</div>"
+    body_close = "</body>"
+    html_close = "</html>"
+
+    # 위에서 만든 HTML 요소들을 하나로 합칩니다.
+    html_content = (
+        doctype + "\n" + html_open + "\n" +
+        head_open + "\n" +
+        meta_charset + "\n" +
+        title_tag + "\n" +
+        style_tag + "\n" +
+        head_close + "\n" +
+        body_open + "\n" +
+        container_open + "\n" +
+        h1_tag + "\n" +
+        message_tag + "\n" +
+        table_tag + "\n" +
+        container_close + "\n" +
+        body_close + "\n" +
+        html_close + "\n"
+    )
+
+    # 완성된 HTML 문서를 파일로 저장합니다.
+    with open(file_name, "w", encoding="utf-8") as file:
+        file.write(html_content)
     print("웹페이지가 만들어졌습니다!")  # 완료 메시지를 출력합니다.
 
 # 인덱스 페이지(index.html)를 만들어주는 함수
@@ -94,6 +116,22 @@ def indexMaker(filename, title):
     html_open = "<html>"
     head_open = "<head>"
     title_tag = f"<title>{title}</title>"
+    style_tag = """
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+    """
     head_close = "</head>"
     body_open = "<body>"
     h1_tag = f'<h1>welcome <a href="mypage.html">{user_info["name"]}</a></h1>'  # 마이페이지로 연결되는 링크 포함
@@ -118,8 +156,8 @@ def indexMaker(filename, title):
     print("생성완료")  # 완료 메시지 출력
 
 # 위에서 만든 두 함수를 실행해서 HTML 파일을 생성합니다.
-mypageMaker('mypage', '마이페이지')
 indexMaker('index.html', 'welcome')
+mypageMaker('mypage', 'mypage')
 
 # 여기서부터는 간단한 웹서버를 만들어서 위에서 만든 HTML 파일들을 브라우저에서 볼 수 있도록 합니다.
 import http.server
