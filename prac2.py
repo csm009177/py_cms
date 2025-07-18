@@ -8,7 +8,7 @@ import json                  # JSON 형식의 파일을 읽고 쓸 수 있도록
 # 두번째 인자 : 파일의 모드 지정 
 # 파일의 모드 => 'r':읽기전용 'w':쓰기전용 'a':추가 모드 'r+':읽기+쓰기 'w+':쓰기+읽기
 with open('user_info.json', 'r', encoding='utf-8') as user_info_from_json:
-    # JSON 파일의 내용을 딕셔너리로 바꿔서 user_info에 저장합니다.
+    # JSON 파일의 내용을 딕셔너리로 바꿔서 user_info라는 공간에 저장합니다.
     # 딕셔너리 => 키 : 값 라는 데이터 형태
     user_info = json.load(user_info_from_json)
 
@@ -28,6 +28,7 @@ def mypageMaker(file_name, page_title):
     html_open = "<html lang='ko'>"
     head_open = "<head>"
     meta_charset = '<meta charset="UTF-8">'
+    # 위에서 받은 page_title 인자를 title 태그와 조합해서 title_tag라는 공간에 담습니다
     title_tag = f"<title>{page_title}</title>"
     style_tag = """
     <style>
@@ -71,8 +72,10 @@ def mypageMaker(file_name, page_title):
     head_close = "</head>"
     body_open = "<body>"
     container_open = '<div class="container">'
+    # 위에서 받은 page_title 인자를 h1 태그와 조합해서 h1_tag라는 공간에 담습니다
     h1_tag = f"<h1>{page_title}</h1>"
     message_tag = f'<p style="text-align:center; color:#666;">{my_message}</p>'
+    # user_info 라는 공간에 담아 두었던 것들 중 몇몇을 지정해서 가져옵니다
     table_tag = f"""
         <table>
             <tr><th>이름</th><td>{user_info['name']}</td></tr>
